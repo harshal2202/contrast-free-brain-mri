@@ -16,7 +16,7 @@ from loss import GeneratorLoss, AdversarialLoss
 #  For CPU only:            img_size=128, batch_size=1
 # ─────────────────────────────────────────────────────────────────────
 CONFIG = {
-    "data_root":   "data",
+    "data_root":   "data_processed",
     "output_dir":  "checkpoints",
     "img_size":    256,
     "batch_size":  4,

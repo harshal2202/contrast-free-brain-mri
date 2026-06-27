@@ -148,11 +148,17 @@ class PatchGANDiscriminator(nn.Module):
 def init_weights(net, gain=0.02):
     def _init(m):
         classname = m.__class__.__name__
-        if 'Conv' in classname:
-            nn.init.normal_(m.weight.data, 0.0, gain)
+        # Strictly check for primitive Convolutional layers
+        if classname in ['Conv2d', 'ConvTranspose2d']:
+            if hasattr(m, 'weight') and m.weight is not None:
+                nn.init.normal_(m.weight.data, 0.0, gain)
             if hasattr(m, 'bias') and m.bias is not None:
                 nn.init.constant_(m.bias.data, 0.0)
+        # Check for standard BatchNorm layers
         elif 'BatchNorm2d' in classname:
-            nn.init.normal_(m.weight.data, 1.0, gain)
-            nn.init.constant_(m.bias.data, 0.0)
+            if hasattr(m, 'weight') and m.weight is not None:
+                nn.init.normal_(m.weight.data, 1.0, gain)
+            if hasattr(m, 'bias') and m.bias is not None:
+                nn.init.constant_(m.bias.data, 0.0)
+                
     net.apply(_init)
