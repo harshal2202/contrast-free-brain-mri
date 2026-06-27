@@ -1,0 +1,13 @@
+data/
+checkpoints/
+venv/
+hars/
+predictions/
+__pycache__/
+*.pth
+*.nii.gz
+*.h5
+*.zip
+*.pyc
+.DS_Store
+comparison.png
