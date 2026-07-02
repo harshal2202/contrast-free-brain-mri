@@ -19,7 +19,19 @@ import torch
 import torchvision.transforms.functional as TF
 
 from train import load_generator
-from dataset import _load_volume, _normalise
+
+# Inline definitions for volume loading and normalization utilities
+def _load_volume(path):
+    img = nib.load(path)
+    return img.get_fdata(dtype=np.float32)
+
+def _normalise(vol):
+    p1, p99 = np.percentile(vol, 1), np.percentile(vol, 99)
+    if p99 - p1 < 1e-6:
+        return np.zeros_like(vol)
+    vol = (vol - p1) / (p99 - p1)
+    vol = vol * 2.0 - 1.0
+    return np.clip(vol, -1.0, 1.0)
 
 
 def infer_volume(t1_path, checkpoint_path, output_path, img_size=256, trim_frac=0.15):
