@@ -12,15 +12,15 @@ from loss import GeneratorLoss, AdversarialLoss
 # ─────────────────────────────────────────────────────────────────────
 #  CONFIG — edit these before running
 #
-#  For RTX 2080 Ti (11GB):  img_size=256, batch_size=4  ← default
-#  For 8GB GPU:             img_size=128, batch_size=2
+#  For RTX 2080 Ti (11GB):  img_size=256, batch_size=4
+#  For 8GB GPU:             img_size=128, batch_size=2  ← configured
 #  For CPU only:            img_size=128, batch_size=1
 # ─────────────────────────────────────────────────────────────────────
 CONFIG = {
     "data_root":   "data_processed",
     "output_dir":  "checkpoints",
     "img_size":    256,
-    "batch_size":  4,
+    "batch_size":  2,
     "num_epochs":  100,
     "lr_g":        2e-4,
     "lr_d":        2e-4,
@@ -137,8 +137,8 @@ def train():
     scheduler_D = optim.lr_scheduler.LambdaLR(opt_D, lr_lambda)
 
     print(f"\n[Train] Starting {CONFIG['num_epochs']} epochs ...\n")
-    print(f"[Train] Estimated time: ~{CONFIG['num_epochs'] * 7 // 60}h "
-          f"{(CONFIG['num_epochs'] * 7) % 60}m on RTX 2080 Ti\n")
+    print(f"[Train] Estimated time: ~{CONFIG['num_epochs'] * 18 // 60}h "
+          f"{(CONFIG['num_epochs'] * 18) % 60}m on 8GB GPU\n")
 
     for epoch in range(1, CONFIG["num_epochs"] + 1):
         G.train()
@@ -210,7 +210,7 @@ def train():
                 val_mae  += (pred_v - t1ce_v).abs().mean().item()
                 n_val += 1
 
-        print(f"  Validation → "
+        print(f"  Validation -> "
               f"PSNR: {val_psnr/n_val:.2f} dB | "
               f"SSIM: {val_ssim/n_val:.4f} | "
               f"MAE: {val_mae/n_val:.4f}\n")
